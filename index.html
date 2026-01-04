@@ -22,7 +22,21 @@
       font-weight: bold;
     }
   </style>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
+  <div id="map" style="height: 400px; margin: 20px;"></div>
+
+<script>
+  var map = L.map('map').setView([4.2105, 101.9758], 6);
+
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+  L.marker([3.1390, 101.6869])
+    .addTo(map)
+    .bindPopup("🚨 Sinkhole Reported: Kuala Lumpur");
+</script>
+
 <body>
 
 <header>
@@ -30,9 +44,20 @@
   <p>Public Awareness & Early Warning</p>
 </header>
 
-<div class="alert">
+  <div class="alert" id="alertBox">
   ⚠️ No active sinkhole alerts at the moment.
 </div>
+
+<button onclick="addSinkhole()">Report Sinkhole</button>
+
+<script>
+  function addSinkhole() {
+    document.getElementById("alertBox").innerHTML =
+      "🚨 SINKHOLE ALERT: Location reported in Kuala Lumpur!";
+    document.getElementById("alertBox").style.backgroundColor = "#ff5252";
+  }
+</script>
+
 
 </body>
 </html>
