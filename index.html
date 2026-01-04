@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8">
-  <title>Malaysia Sinkhole Alert</title>
+  <title>Malaysia Sinkhole Alert System</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   <!-- Leaflet CSS -->
   <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
@@ -11,24 +12,56 @@
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f6f8;
-      text-align: center;
       margin: 0;
+      text-align: center;
     }
+
     header {
       background-color: #c62828;
       color: white;
-      padding: 20px;
+      padding: 15px;
     }
+
     .alert {
       background: #ffeb3b;
       padding: 15px;
-      margin: 20px;
+      margin: 15px;
       border-radius: 5px;
       font-weight: bold;
     }
+
     #map {
-      height: 400px;
-      margin: 20px;
+      height: 350px;
+      margin: 15px;
+      border-radius: 10px;
+    }
+
+    .form-box {
+      background: white;
+      margin: 15px;
+      padding: 15px;
+      border-radius: 10px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+    }
+
+    input, button {
+      width: 90%;
+      padding: 10px;
+      margin: 8px 0;
+      border-radius: 5px;
+      border: 1px solid #ccc;
+    }
+
+    button {
+      background-color: #c62828;
+      color: white;
+      border: none;
+      font-weight: bold;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #b71c1c;
     }
   </style>
 </head>
@@ -41,36 +74,74 @@
 </header>
 
 <div class="alert" id="alertBox">
-  ⚠️ No active sinkhole alerts at the moment.
+  ⚠️ Stay alert. Sinkholes reported in several areas.
 </div>
-
-<button onclick="addSinkhole()">Report Sinkhole</button>
 
 <!-- MAP -->
 <div id="map"></div>
+
+<!-- USER REPORT FORM -->
+<div class="form-box">
+  <h3>📍 Report a Sinkhole</h3>
+  <input type="text" id="location" placeholder="Location (e.g. Shah Alam)">
+  <input type="number" id="lat" placeholder="Latitude">
+  <input type="number" id="lng" placeholder="Longitude">
+  <button onclick="reportSinkhole()">Submit Report</button>
+</div>
 
 <!-- Leaflet JS -->
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 
 <script>
-  // Initialize map
+  // AUTO ALERT POPUP
+  window.onload = function () {
+    alert("🚨 Sinkhole Alert System Active. Please stay cautious.");
+  };
+
+  // MAP INITIALIZATION
   var map = L.map('map').setView([4.2105, 101.9758], 6);
 
-  // Map tiles
   L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '© OpenStreetMap contributors'
   }).addTo(map);
 
-  // Sinkhole marker
-  L.marker([3.1390, 101.6869])
-    .addTo(map)
-    .bindPopup("🚨 Sinkhole Reported: Kuala Lumpur");
+  // MULTIPLE SINKHOLE LOCATIONS (SAMPLE DATA)
+  var sinkholes = [
+    { location: "Kuala Lumpur", lat: 3.1390, lng: 101.6869 },
+    { location: "Ipoh", lat: 4.5975, lng: 101.0901 },
+    { location: "Johor Bahru", lat: 1.4927, lng: 103.7414 }
+  ];
 
-  // Alert function
-  function addSinkhole() {
+  sinkholes.forEach(function(data) {
+    L.marker([data.lat, data.lng])
+      .addTo(map)
+      .bindPopup("🚨 Sinkhole Reported: " + data.location);
+  });
+
+  // USER REPORT FUNCTION
+  function reportSinkhole() {
+    var location = document.getElementById("location").value;
+    var lat = document.getElementById("lat").value;
+    var lng = document.getElementById("lng").value;
+
+    if (location === "" || lat === "" || lng === "") {
+      alert("Please fill in all fields.");
+      return;
+    }
+
+    L.marker([lat, lng])
+      .addTo(map)
+      .bindPopup("🚨 User Reported Sinkhole: " + location)
+      .openPopup();
+
     document.getElementById("alertBox").innerHTML =
-      "🚨 SINKHOLE ALERT: Location reported in Kuala Lumpur!";
+      "🚨 NEW SINKHOLE ALERT: " + location;
     document.getElementById("alertBox").style.backgroundColor = "#ff5252";
+
+    // Clear form
+    document.getElementById("location").value = "";
+    document.getElementById("lat").value = "";
+    document.getElementById("lng").value = "";
   }
 </script>
 
