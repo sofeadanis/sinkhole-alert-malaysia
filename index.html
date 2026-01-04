@@ -3,11 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <title>Malaysia Sinkhole Alert</title>
+
+  <!-- Leaflet CSS -->
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
+
   <style>
     body {
       font-family: Arial, sans-serif;
       background-color: #f4f6f8;
       text-align: center;
+      margin: 0;
     }
     header {
       background-color: #c62828;
@@ -21,21 +26,12 @@
       border-radius: 5px;
       font-weight: bold;
     }
+    #map {
+      height: 400px;
+      margin: 20px;
+    }
   </style>
-  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css"/>
-<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
 </head>
-  <div id="map" style="height: 400px; margin: 20px;"></div>
-
-<script>
-  var map = L.map('map').setView([4.2105, 101.9758], 6);
-
-  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
-
-  L.marker([3.1390, 101.6869])
-    .addTo(map)
-    .bindPopup("🚨 Sinkhole Reported: Kuala Lumpur");
-</script>
 
 <body>
 
@@ -44,20 +40,39 @@
   <p>Public Awareness & Early Warning</p>
 </header>
 
-  <div class="alert" id="alertBox">
+<div class="alert" id="alertBox">
   ⚠️ No active sinkhole alerts at the moment.
 </div>
 
 <button onclick="addSinkhole()">Report Sinkhole</button>
 
+<!-- MAP -->
+<div id="map"></div>
+
+<!-- Leaflet JS -->
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
 <script>
+  // Initialize map
+  var map = L.map('map').setView([4.2105, 101.9758], 6);
+
+  // Map tiles
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+    attribution: '© OpenStreetMap contributors'
+  }).addTo(map);
+
+  // Sinkhole marker
+  L.marker([3.1390, 101.6869])
+    .addTo(map)
+    .bindPopup("🚨 Sinkhole Reported: Kuala Lumpur");
+
+  // Alert function
   function addSinkhole() {
     document.getElementById("alertBox").innerHTML =
       "🚨 SINKHOLE ALERT: Location reported in Kuala Lumpur!";
     document.getElementById("alertBox").style.backgroundColor = "#ff5252";
   }
 </script>
-
 
 </body>
 </html>
