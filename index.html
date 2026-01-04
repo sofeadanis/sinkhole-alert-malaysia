@@ -84,8 +84,8 @@
 <div class="form-box">
   <h3>📍 Report a Sinkhole</h3>
   <input type="text" id="location" placeholder="Location (e.g. Shah Alam)">
-  <input type="number" id="lat" placeholder="Latitude">
-  <input type="number" id="lng" placeholder="Longitude">
+  <input type="number" id="lat" placeholder="Latitude" step="any">
+  <input type="number" id="lng" placeholder="Longitude" step="any">
   <button onclick="reportSinkhole()">Submit Report</button>
 </div>
 
@@ -120,23 +120,28 @@
 
   // USER REPORT FUNCTION
   function reportSinkhole() {
-    var location = document.getElementById("location").value;
-    var lat = document.getElementById("lat").value;
-    var lng = document.getElementById("lng").value;
+    var location = document.getElementById("location").value.trim();
+    var lat = parseFloat(document.getElementById("lat").value);
+    var lng = parseFloat(document.getElementById("lng").value);
 
-    if (location === "" || lat === "" || lng === "") {
-      alert("Please fill in all fields.");
+    if (!location || isNaN(lat) || isNaN(lng)) {
+      alert("❌ Please enter a valid location and coordinates.");
       return;
     }
 
-    L.marker([lat, lng])
+    // Add marker
+    var marker = L.marker([lat, lng])
       .addTo(map)
       .bindPopup("🚨 User Reported Sinkhole: " + location)
       .openPopup();
 
-    document.getElementById("alertBox").innerHTML =
-      "🚨 NEW SINKHOLE ALERT: " + location;
-    document.getElementById("alertBox").style.backgroundColor = "#ff5252";
+    // Focus map on new report
+    map.setView([lat, lng], 12);
+
+    // Update alert box
+    var alertBox = document.getElementById("alertBox");
+    alertBox.innerHTML = "🚨 NEW SINKHOLE ALERT: " + location;
+    alertBox.style.backgroundColor = "#ff5252";
 
     // Clear form
     document.getElementById("location").value = "";
