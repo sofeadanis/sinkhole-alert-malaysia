@@ -84,8 +84,8 @@
 <div class="form-box">
   <h3>📍 Report a Sinkhole</h3>
   <input type="text" id="location" placeholder="Location (e.g. Shah Alam)">
-  <input type="number" id="lat" placeholder="Latitude" step="any">
-  <input type="number" id="lng" placeholder="Longitude" step="any">
+  <input type="number" id="lat" placeholder="Latitude" step="any" readonly>
+  <input type="number" id="lng" placeholder="Longitude" step="any" readonly>
   <button onclick="reportSinkhole()">Submit Report</button>
 </div>
 
@@ -96,6 +96,7 @@
   // AUTO ALERT POPUP
   window.onload = function () {
     alert("🚨 Sinkhole Alert System Active. Please stay cautious.");
+    getUserLocation();
   };
 
   // MAP INITIALIZATION
@@ -118,14 +119,36 @@
       .bindPopup("🚨 Sinkhole Reported: " + data.location);
   });
 
-  // USER REPORT FUNCTION
+  // FUNCTION TO GET USER'S CURRENT LOCATION
+  function getUserLocation() {
+    if (navigator.geolocation) {
+      navigator.geolocation.getCurrentPosition(function(position) {
+        document.getElementById('lat').value = position.coords.latitude;
+        document.getElementById('lng').value = position.coords.longitude;
+        map.setView([position.coords.latitude, position.coords.longitude], 12);
+      });
+    } else {
+      alert("Geolocation is not supported by this browser.");
+    }
+  }
+
+  // IMPROVED DATA VALIDATION
   function reportSinkhole() {
     var location = document.getElementById("location").value.trim();
     var lat = parseFloat(document.getElementById("lat").value);
     var lng = parseFloat(document.getElementById("lng").value);
 
-    if (!location || isNaN(lat) || isNaN(lng)) {
-      alert("❌ Please enter a valid location and coordinates.");
+    // Validation for empty location and invalid coordinates
+    if (!location) {
+      alert("❌ Please enter a valid location.");
+      return;
+    }
+    if (isNaN(lat)) {
+      alert("❌ Please enter a valid latitude.");
+      return;
+    }
+    if (isNaN(lng)) {
+      alert("❌ Please enter a valid longitude.");
       return;
     }
 
@@ -148,6 +171,13 @@
     document.getElementById("lat").value = "";
     document.getElementById("lng").value = "";
   }
+
+  // MAP INTERACTIVITY - CLICK TO SELECT LOCATION
+  map.on('click', function(e) {
+    document.getElementById('lat').value = e.latlng.lat;
+    document.getElementById('lng').value = e.latlng.lng;
+  });
+
 </script>
 
 </body>
